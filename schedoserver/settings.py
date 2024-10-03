@@ -36,6 +36,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,6 +49,9 @@ INSTALLED_APPS = [
     'apps.notifications',
     'corsheaders',
     'rest_framework',
+    'rest_framework.authtoken',
+    'django.contrib.sessions',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -60,6 +64,22 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+#TODO: DRF Authentication settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',  # Use session authentication
+        'rest_framework.authentication.TokenAuthentication',  # Optionally add token authentication
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',  # Enforce authentication globally
+    ],
+}
+
+#TODO: setup session cookie
+SESSION_COOKIE_AGE = 1209600  # 2 weeks in seconds
+SESSION_SAVE_EVERY_REQUEST = True
+
 
 #todo: set up CORS for React or other frontend clients
 CORS_ALLOWED_ORIGINS = [
@@ -100,7 +120,7 @@ DATABASES = {
         'HOST': 'localhost',  # or your database host
         'PORT': '5432',       # default PostgreSQL port
     }
-}
+}  
 
 
 
@@ -144,3 +164,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#TODO:  ADD AUTHENTICATION BACKEND
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
