@@ -185,3 +185,42 @@ def get_profile(request):
             },
             status=status.HTTP_404_NOT_FOUND
         )
+
+
+@api_view(['PUT'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def edit_profile(request):
+    """
+    Fully update the profile of the authenticated user.
+    """
+    try:
+        profile = request.user.profile
+        serializer = ProfileSerializer(profile, data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    'status': 'success',
+                    'message': 'Profile updated successfully',
+                    'profile': serializer.data
+                },
+                status=status.HTTP_200_OK
+            )
+        
+        return Response(
+            {
+                'status': 'error',
+                'errors': serializer.errors
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    except Profile.DoesNotExist:
+        return Response(
+            {
+                'status': 'error',
+                'message': 'Profile not found'
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
