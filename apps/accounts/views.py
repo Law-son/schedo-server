@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authentication import TokenAuthentication
+from .models import Profile
 
 @api_view(['POST'])
 @authentication_classes([])  # No authentication required for signup
@@ -153,3 +154,34 @@ def create_profile(request):
         },
         status=status.HTTP_400_BAD_REQUEST
     )
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_profile(request):
+    """
+    Retrieve the profile of the authenticated user.
+    """
+    try:
+        # Retrieve the profile associated with the authenticated user
+        profile = request.user.profile  # Assuming the OneToOneField relationship from User to Profile
+        serializer = ProfileSerializer(profile)
+        
+        # Return the profile data
+        return Response(
+            {
+                'status': 'success',
+                'profile': serializer.data
+            },
+            status=status.HTTP_200_OK
+        )
+    except Profile.DoesNotExist:
+        # Handle case where the profile does not exist for the user
+        return Response(
+            {
+                'status': 'error',
+                'message': 'Profile not found'
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
