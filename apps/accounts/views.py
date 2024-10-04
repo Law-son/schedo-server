@@ -5,6 +5,9 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.permissions import AllowAny
 from .serializers import UserSerializer
 from django.contrib.auth import authenticate
+from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.authentication import TokenAuthentication
 
 @api_view(['POST'])
 @authentication_classes([])  # No authentication required for signup
@@ -78,4 +81,40 @@ def login(request):
                 'message': 'Invalid email or password'
             },
             status=status.HTTP_401_UNAUTHORIZED
+        )
+
+
+@csrf_exempt
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def logout(request):
+    print(f"Request Headers: {request.headers}")  # Debugging output
+    print(f"Authenticated User: {request.user}")  # Check authenticated user
+
+    try:
+        # Get the token from the request
+        token = request.auth  # `request.auth` contains the token for authenticated users
+        
+        print(f"Token: {token}")  # Debugging output for the token
+        
+        # Delete the token
+        if token:
+            token.delete()  # Remove the token from the database
+        
+        return Response(
+            {
+                'status': 'success',
+                'message': 'Logged out successfully'
+            },
+            status=status.HTTP_200_OK
+        )
+    except Exception as e:
+        # Handle the exception and return a suitable error response
+        return Response(
+            {
+                'status': 'error',
+                'message': str(e)
+            },
+            status=status.HTTP_400_BAD_REQUEST
         )
