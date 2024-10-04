@@ -30,4 +30,5 @@ class UserSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = '__all__'
+        # Exclude the `user` field since it will be provided in the view, not by the user.
+        exclude = ['user']

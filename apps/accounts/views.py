@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import AllowAny
-from .serializers import UserSerializer
+from .serializers import UserSerializer, ProfileSerializer
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from django.views.decorators.csrf import csrf_exempt
@@ -118,3 +118,38 @@ def logout(request):
             },
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def create_profile(request):
+    """
+    Create a new profile for the authenticated user.
+    """
+    # Initialize the serializer with request data, excluding `user`
+    serializer = ProfileSerializer(data=request.data)
+    
+    # Validate the incoming data
+    if serializer.is_valid():
+        # Save the profile and associate it with the authenticated user
+        serializer.save(user=request.user)
+        
+        # Return success response
+        return Response(
+            {
+                'status': 'success',
+                'message': 'Profile created successfully',
+                'profile': serializer.data
+            },
+            status=status.HTTP_201_CREATED
+        )
+    
+    # Return error response with validation errors
+    return Response(
+        {
+            'status': 'error',
+            'errors': serializer.errors
+        },
+        status=status.HTTP_400_BAD_REQUEST
+    )
