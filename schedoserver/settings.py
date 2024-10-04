@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-    'django.contrib.sessions',
     'django_extensions',
 ]
 
@@ -81,11 +80,13 @@ SESSION_COOKIE_AGE = 1209600  # 2 weeks in seconds
 SESSION_SAVE_EVERY_REQUEST = True
 
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 #todo: set up CORS for React or other frontend clients
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:8000",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     "http://127.0.0.1:8000",
+# ]
 
 ROOT_URLCONF = 'schedoserver.urls'
 
@@ -169,3 +170,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+
+AUTH_USER_MODEL = 'accounts.User'  #TODO: Custom User model name

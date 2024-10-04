@@ -16,7 +16,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.decorators.csrf import csrf_exempt
+from django.middleware.csrf import get_token
+from django.http import JsonResponse
+
+
+# Create a simple view that returns the CSRF token as JSON
+def get_csrf_token(request):
+    token = get_token(request)
+    return JsonResponse({'csrftoken': token})
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('get-csrf-token/', get_csrf_token),
+    path('accounts/', include('apps.accounts.urls')),
+    # path('events/', include('apps.events.urls')),
+    # path('registrations/', include('apps.registrations.urls')),
+    # path('notifications/', include('apps.notifications.urls')),
 ]
