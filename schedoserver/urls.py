@@ -31,7 +31,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('get-csrf-token/', get_csrf_token),
     path('accounts/', include('apps.accounts.urls')),
-    # path('events/', include('apps.events.urls')),
+    path('events/', include('apps.events.urls')),
     # path('registrations/', include('apps.registrations.urls')),
     # path('notifications/', include('apps.notifications.urls')),
 ]

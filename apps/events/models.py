@@ -5,7 +5,7 @@ from apps.accounts.models import User  # Importing the User model from the accou
 class Event(models.Model):
     id = models.AutoField(primary_key=True)  # Unique identifier for the event
     title = models.CharField(max_length=200)  # Title of the event
-    online_link = models.CharField(max_length=200)  # Online link for the event, optional
+    online_link = models.CharField(max_length=200, blank=True, null=True)  # Online link for the event, optional
     description = models.TextField()  # Detailed description of the event
     thumbnail = models.TextField(blank=True, null=True)  # URL/path for event's thumbnail (optional)
     start_date = models.CharField(max_length=10)  # Start date of the event
@@ -18,8 +18,8 @@ class Event(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)  # Date and time when the event was created
     updated_at = models.DateTimeField(auto_now=True)  # Date and time when the event was last updated
     is_active = models.BooleanField(default=True)  # Indicates if the event is currently active
-    is_public = models.BooleanField(default=True)  # Indicates if the event is public
-    is_online = models.BooleanField(default=True)  # Indicates if the event is online
+    is_public = models.BooleanField(default=False)  # Indicates if the event is public
+    is_online = models.BooleanField(default=False)  # Indicates if the event is online
 
     def __str__(self):
         return self.title
