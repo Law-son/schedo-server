@@ -73,10 +73,10 @@ def get_public_events(request):
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def get_user_events(request, user_id):
+def get_user_events(request):
     try:
         # Fetch events with the given user_id
-        user_events = Event.objects.filter(created_by=user_id)
+        user_events = Event.objects.filter(created_by=request.user)
         # Serialize the queryset
         serializer = EventSerializer(user_events, many=True)
         # Return the serialized data
@@ -93,6 +93,7 @@ def get_user_events(request, user_id):
             },
             status=status.HTTP_400_BAD_REQUEST
         )
+
     
 
 @api_view(['GET'])
