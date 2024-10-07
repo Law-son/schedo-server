@@ -5,10 +5,10 @@ from apps.events.models import Event  # Importing the Event model from the event
 # Model class for Attendee
 class Attendee(models.Model):
     id = models.AutoField(primary_key=True)  # Unique identifier for the attendee
-    first_name = models.CharField(max_length=100)  # Attendee's first name
-    last_name = models.CharField(max_length=100)  # Attendee's last name
-    email = models.EmailField(unique=True)  # Attendee's email
-    phone_number = models.CharField(max_length=20)  # Attendee's phone number
+    first_name = models.CharField(max_length=100, default='')  # Attendee's first name
+    last_name = models.CharField(max_length=100, default='')  # Attendee's last name
+    email = models.EmailField(unique=True, default='')  # Attendee's email
+    phone_number = models.CharField(max_length=20, default='')  # Attendee's phone number
     gender = models.CharField(max_length=20, choices=[  # Attendee's gender
         ('male', 'Male'),
         ('female', 'Female'),
@@ -30,8 +30,8 @@ class Attendee(models.Model):
 class Ticket(models.Model):
     id = models.AutoField(primary_key=True)  # Unique identifier for the ticket
     event = models.ForeignKey(Event, on_delete=models.CASCADE)  # Link to the Event model (the event for which the ticket is valid)
-    attendee = models.ForeignKey(Attendee, on_delete=models.CASCADE)  # Link to the Attendee model
-    event_title = models.CharField(max_length=300)  # Event title
+    attendee = models.ForeignKey(Attendee, on_delete=models.CASCADE, default='')  # Link to the Attendee model
+    event_title = models.CharField(max_length=300, default='')  # Event title
     first_name = models.CharField(max_length=100)  # Attendee's first name
     last_name = models.CharField(max_length=100)  # Attendee's last name
     ticket_code = models.CharField(max_length=255, unique=True, default='')  # Unique code for the ticket

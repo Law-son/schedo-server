@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import TicketSerializer
 from .models import Attendee, Ticket
+from apps.events.models import Event
 
 import string
 import random
@@ -28,12 +29,13 @@ def create_attendee(request):
         serializer.save()
 
         # Create a new ticket for the attendee
+        event = Event.objects.get(id=serializer.data['event'])
         ticket_serializer = TicketSerializer(
             data = {
                 'ticket_code': generate_ticket_code(),
                 'event': serializer.data['event'],
                 'attendee': serializer.data['id'],
-                'event_title': serializer.data['event'],
+                'event_title': event.title,
                 'first_name': serializer.data['first_name'],
                 'last_name': serializer.data['last_name']
             }
@@ -70,32 +72,23 @@ def fetch_attendees(request, event_id):
     """
     attendees = Attendee.objects.filter(event__id=event_id)
     serializer = AttendeeSerializer(attendees, many=True)
-    if serializer.is_valid():
-        return Response(
-            {
-                'status': 'success',
-                'attendees': serializer.data
-            },
-            status=status.HTTP_200_OK
-        )
     return Response(
         {
-            'status': 'error',
-            'errors': serializer.errors
+            'status': 'success',
+            'attendees': serializer.data
         },
-        status=status.HTTP_400_BAD_REQUEST
+        status=status.HTTP_200_OK
     )
 
 
 @api_view(['GET'])
-def fetch_ticket(request):
+def fetch_ticket(request, ticket_code):
     """
     Fetch an attendee's ticket by their ticket_code.
 
     :param request: The request containing the attendee's ticket_code
     :return: A JSON response containing the attendee's ticket
     """
-    ticket_code = request.query_params.get('ticket_code', None)
     if ticket_code is None:
         return Response(
             {'status': 'error', 'message': 'Ticket code is required'},
@@ -123,14 +116,14 @@ def fetch_ticket(request):
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def scan_ticket(request):
+def scan_ticket(request, ticket_code):
     """
     Check if an attendee is registered for an event.
 
     :param request: The request containing the attendee's ticket_code
+    :param ticket_code: The ticket code to check
     :return: A JSON response with "Registered" or "Not Registered" status
     """
-    ticket_code = request.query_params.get('ticket_code', None)
     if ticket_code is None:
         return Response(
             {'status': 'error', 'message': 'Ticket code is required'},
@@ -138,6 +131,11 @@ def scan_ticket(request):
         )
     try:
         ticket = Ticket.objects.get(ticket_code=ticket_code)
-        return Response({'status': 'Registered'}, status=status.HTTP_200_OK)
+        if ticket.is_used:
+            return Response({'status': 'Ticket used'}, status=status.HTTP_200_OK)
+        else:
+            ticket.is_used = True
+            ticket.save()
+            return Response({'status': 'Registered'}, status=status.HTTP_200_OK)
     except Ticket.DoesNotExist:
         return Response({'status': 'Not Registered'}, status=status.HTTP_200_OK)
