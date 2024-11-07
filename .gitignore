@@ -1,0 +1,53 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Django static and media files
+staticfiles/
+media
+
+# Local development environment
+.env
+
+# Django migrations
+**/migrations/*
+
+# Pytest cache
+.pytest_cache
+
+# Unit test / coverage reports
+htmlcov/
+.coverage
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+
+# Virtual environment
+venv/
+env
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+*.pot
+local_settings.py
+
+# Sensitive files
+**/credentials.json
+
