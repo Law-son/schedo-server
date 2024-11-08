@@ -114,7 +114,7 @@ def create_attendee(request):
             print("Added Ticket")
 
             # Send congratulatory email
-            ticket_url = f"http://localhost:5173/ticket/{ticket_code}"
+            ticket_url = f"https://schedo.vercel.app/ticket/{ticket_code}"
             subject = "Congratulations on Registering for the Event!"
             message = f"Hello {first_name},\nYou have successfully registered for {event.title}.\nYou can view your ticket here: {ticket_url}\n\nThank you for registering!"
 
