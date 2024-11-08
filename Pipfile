@@ -17,6 +17,8 @@ google-api-python-client = "*"
 cloudinary = "*"
 python-dotenv = "*"
 git-filter-repo = "*"
+dj-database-url = "*"
+psycopg2 = "*"
 
 [dev-packages]
 
