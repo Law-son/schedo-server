@@ -19,6 +19,7 @@ python-dotenv = "*"
 git-filter-repo = "*"
 dj-database-url = "*"
 psycopg2 = "*"
+gunicorn = "*"
 
 [dev-packages]
 
